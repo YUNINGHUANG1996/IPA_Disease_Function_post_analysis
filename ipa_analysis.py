@@ -6,6 +6,7 @@ Requirements:
 - EF1_RUV_upregulated_disease.csv (your IPA output files)
 - Final_combined_unique_categories_pathways.csv
 - DE_results_RUVs_normalized_gene_symbol_EF1.csv (your DEG files)
+## Make sure the gene symbol column has the column name "Name"
 
 Usage:
 Run this script in the command line using:
@@ -22,7 +23,7 @@ from openpyxl import Workbook
 
 
 # Set your input filename and derive the prefix
-input_filename = "IPA_FC1.1_EF1_downregulated.csv"
+input_filename = "IPA_FC1.1_EF1_upregulated.csv"
 DEG=pd.read_csv("DE_results_RUVs_normalized_gene_symbol_EF1.csv")
 pathway = pd.read_csv("Final_combined_unique_categories_pathways.csv")
 
@@ -38,7 +39,7 @@ df['Categories'] = df['Categories'].str.replace('DNA Replication, Recombination,
 pathway = pd.read_csv("Final_combined_unique_categories_pathways.csv")
 
 
-# prompt: split Categories column by commas and save them into new columns 1,2,3,4,5,6.....
+# split Categories column by commas and save them into new columns 1,2,3,4,5,6.....
 
 categories_split = df['Categories'].str.split(',', expand=True)
 categories_split.columns = ['Category_' + str(i) for i in range(1, categories_split.shape[1] + 1)]
@@ -52,7 +53,7 @@ for index, row in pathway.iterrows():
         if col.startswith('Category_'):
             df.loc[df[col] == category, col] = pathway_value
 
-# prompt: Combine the duplicated value in Category_1 to Category_11, and only save one value, and remove the empty column
+# Combine the duplicated value in Category_1 to Category_11, and only save one value, and remove the empty column
 
 category_columns = [col for col in df.columns if col.startswith('Category_')]
 
@@ -76,8 +77,6 @@ df = pd.concat([df, categories_split], axis=1)
 
 # Assuming your DataFrame is named 'df' and the category columns are 'Category_1', 'Category_2', and 'Category_3'
 
-# Assuming your DataFrame is named 'df' and the category columns are 'Category_1', 'Category_2', and 'Category_3'
-
 # Define the list of category columns
 category_columns = [col for col in df.columns if col.startswith('Category_')]
 
@@ -95,7 +94,7 @@ print(f"Number of rows in df_physiological: {len(df_physiological)}")
 print(f"Number of rows in df_molecular: {len(df_molecular)}")
 
 
-# prompt: extract the corresponding Values for the pathway["Pathways"] and create 3 list disease, physiological,molecular from the pathway df
+# extract the corresponding Values for the pathway["Pathways"] and create 3 list disease, physiological,molecular from the pathway df
 
 disease_list = pathway[pathway['Pathways'] == 'Diseases_and_Disorders']['Categories'].tolist()
 physiological_list = pathway[pathway['Pathways'] == 'Physiological_System_Development_and_Function']['Categories'].tolist()
@@ -106,7 +105,7 @@ print("Disease Categories:", disease_list)
 print("Physiological Categories:", physiological_list)
 print("Molecular Categories:", molecular_list)
 
-# prompt: Look through the subcategory_* columns, and find the unique values and extract the top 10 values in the subcategory_* that has the smallest "B-H p-value" and do it for the 3 dfs(df_diseases,df_physiological,df_molecular). each dfs value need to be disease_list or physiological_list or molecular_list
+# Look through the subcategory_* columns, and find the unique values and extract the top 10 values in the subcategory_* that has the smallest "B-H p-value" and do it for the 3 dfs(df_diseases,df_physiological,df_molecular). each dfs value need to be disease_list or physiological_list or molecular_list
 
 def extract_top_10_subcategories(df, pathway_list):
     """Extracts the top 10 subcategories with the smallest 'B-H p-value' for a given DataFrame and pathway list.
@@ -150,8 +149,6 @@ print("Top 10 Physiological Subcategories:", physiological_top_10)
 print("Top 10 Molecular Subcategories:", molecular_top_10)
 
 disease_top_10
-
-# prompt: I want to extract separate dfs from the 3 dfs(df_diseases,df_physiological,df_molecular) with the values in the "subcategory_*" column that has top_10_diseases, top_10_physiological,top_10_molecular (one dataframe with only one values in the list (top_10_diseases, top_10_physiological,top_10_molecular ) , so i will have 30 dfs. (please name the dfs with the value names in each dfs)
 
 # Assuming you have df_diseases, df_physiological, and df_molecular DataFrames
 
@@ -202,8 +199,6 @@ df_names = [name for name in globals() if name.startswith("df_") and isinstance(
 df_names, len(df_names)
 
 
-
-# prompt: provide me with an excel sheet with the subsheets of the globals dfs (Not including 'df_diseases', 'df_physiological', 'df_molecular' ) subsheets
 # Assuming you have df_names defined as a list of DataFrame names
 
 # Create a new Excel workbook
@@ -318,10 +313,8 @@ final_disease = final_disease.sort_values(by="Smallest B-H p-value", ascending=F
 final_physiological = final_physiological.sort_values(by="Smallest B-H p-value", ascending=False)
 final_molecular = final_molecular.sort_values(by="Smallest B-H p-value", ascending=False)
 
-# prompt: plot barh plot based on log padj top_30_pvalues"B-H p-value" and the y axis is "Diseases or Functions Annotation" display the top 10 pathways
+# plot barh plot based on log padj top_30_pvalues"B-H p-value" and the y axis is "Diseases or Functions Annotation" display the top 10 pathways
 
-import matplotlib.pyplot as plt
-import numpy as np
 
 # Assuming 'top_30_pvalues' is your DataFrame
 plt.figure(figsize=(7,6))
@@ -332,10 +325,8 @@ plt.title('Top 10 Pathways by -log10(B-H p-value)')
 plt.tight_layout()
 plt.savefig(os.path.join(output_dir, f"Top_10_disease_{input_prefix}.png"), format="png", dpi=300)
 
-# prompt: plot barh plot based on log padj top_30_pvalues"B-H p-value" and the y axis is "Diseases or Functions Annotation" display the top 10 pathways
+# plot barh plot based on log padj top_30_pvalues"B-H p-value" and the y axis is "Diseases or Functions Annotation" display the top 10 pathways
 
-import matplotlib.pyplot as plt
-import numpy as np
 
 # Assuming 'final_physiological' is your DataFrame
 plt.figure(figsize=(8, 6))
@@ -346,10 +337,7 @@ plt.title('Top 10 Pathways by -log10(B-H p-value)')
 plt.tight_layout()
 plt.savefig(os.path.join(output_dir,f"Top_10_physiological_{input_prefix}.png"), format="png", dpi=300)
 
-# prompt: plot barh plot based on log padj top_30_pvalues"B-H p-value" and the y axis is "Diseases or Functions Annotation" display the top 10 pathways
-
-import matplotlib.pyplot as plt
-import numpy as np
+# plot barh plot based on log padj top_30_pvalues"B-H p-value" and the y axis is "Diseases or Functions Annotation" display the top 10 pathways
 
 # Assuming 'final_physiological' is your DataFrame
 plt.figure(figsize=(7, 6))
@@ -360,7 +348,7 @@ plt.title('Top 10 Pathways by -log10(B-H p-value)')
 plt.tight_layout()
 plt.savefig(os.path.join(output_dir,f"Top_10_molecular_{input_prefix}.png"), format="png", dpi=300)
 
-# prompt: add a -logpadh column by -log(B-H p-value)
+# add a -logpadh column by -log(B-H p-value)
 
 final_disease['-logpadj'] = -np.log10(final_disease['Smallest B-H p-value'])
 final_physiological['-logpadj'] = -np.log10(final_physiological['Smallest B-H p-value'])
@@ -372,7 +360,6 @@ final_disease["GeneRatio"] = final_disease["Number of Genes"] / 326
 final_physiological["GeneRatio"] = final_physiological["Number of Genes"] / 326
 final_molecular["GeneRatio"] = final_molecular["Number of Genes"] / 326
 
-import seaborn as sns
 
 plt.figure(figsize=(10, 6))
 scatter = sns.scatterplot(
