@@ -2,7 +2,7 @@
 This is the python script to conduct basic and simple analysis over IPA output.
 All the input files we need are:
 1. IPA Output: Export the IPA Disease and Function results to Excel, remove the first row, and save it as a CSV file. Ensure the "B-H p-value" column (representing the adjusted p-value) is included in the output.
-2. Reference Pathway File: This file links IPA’s main pathway categories (Molecular and Cellular Functions, Physiological System Development and Function, Diseases and Disorders) to their respective sub-pathways. A curated pathway reference file is also available for use.
+2. Reference Pathway File: This file links IPA’s main pathway categories (Molecular and Cellular Functions, Physiological System Development and Function, Diseases and Disorders) to their respective sub-pathways. A curated pathway reference file is also available for use (Reference_IPA_pathways_to_subpathways.csv).
 3. Differential Expression Gene (DEG) Output: Include the output file from your differential expression analysis, detailing gene expression levels across conditions.
 
 Running the Script
